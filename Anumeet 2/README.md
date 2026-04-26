@@ -72,12 +72,12 @@ Open [http://localhost:5000](http://localhost:5000) in your browser. The server 
 
 ## 🔑 Admin Access
 To access the Admin Dashboard:
-1. Register with the email `kushagrabajpeimbc@gmail.com` to be automatically granted the **Admin** role.
+1. Register with the email `anumeetdhami@gmail.com` to be automatically granted the **Admin** role.
 2. Navigate to the **Admin** link in the navigation bar.
 
 ## 📝 License
 Distributed under the MIT License.
 
 ---
-Developed with ✨ by Kushagra Bajpei
+Developed with ✨ by Anumeet Kaur,Ramneek kaur, Tania.
 ```
