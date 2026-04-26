@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Details | Aura</title>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="testimonials.html">Reviews</a>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">🌓</button>
+      <div class="auth-buttons nav-links" id="auth-nav"></div>
+    </div>
+  </nav>
+
+  <div class="container details-container" id="details-container">
+    <!-- Injected by JS -->
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+          <p style="color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6;">Your premium destination for beauty and wellness services. We connect you with top-tier professionals for a seamless self-care experience.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Hair Styling</a></li>
+            <li><a href="services.html">Makeup Artists</a></li>
+            <li><a href="services.html">Spa & Massage</a></li>
+            <li><a href="services.html">Nail Care</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="testimonials.html">Reviews</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact Support</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Stay Updated</h4>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">Subscribe to our newsletter for the latest beauty tips and exclusive offers.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aura Beauty & Wellness. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="cookies.html">Cookie Settings</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      
+      await loadServices();
+      const service = SERVICES.find(s => s.id === id);
+
+      if (!service) {
+        document.getElementById('details-container').innerHTML = `<h2>Service not found</h2>`;
+        return;
+      }
+
+      document.title = `${service.title} | Aura`;
+
+      const reviewsRes = await fetch(`${API_URL}/reviews/${id}`);
+      const reviewsData = await reviewsRes.json();
+      const reviews = reviewsData.success ? reviewsData.reviews : [];
+
+      document.getElementById('details-container').innerHTML = `
+        <div class="observe fade-in">
+          <img src="${service.image}" alt="${service.title}" class="details-img loading-skeleton">
+          <div class="details-header">
+            <span class="service-category">${service.category}</span>
+            <h1 style="font-size: 2.5rem; margin: 0.5rem 0;">${service.title}</h1>
+            <p style="font-size: 1.2rem; color: var(--text-muted);">by ${service.provider}</p>
+          </div>
+          
+          <div class="details-meta">
+            <span>⭐ ${service.rating} (${service.reviewCount} reviews)</span>
+            <span>⏱️ ${service.duration} mins</span>
+            <span>📍 ${service.location}</span>
+          </div>
+
+          <h3 style="margin-bottom: 1rem;">About</h3>
+          <p style="color: var(--text-muted); margin-bottom: 2rem;">${service.description}</p>
+
+          <h3 style="margin-bottom: 1rem;">Reviews</h3>
+          <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+            ${!isLoggedIn() ? '<p>Please <a href="login.html" style="color:var(--primary)">login</a> to write a review.</p>' : `
+              <form id="review-form">
+                <div class="form-group">
+                  <select id="r-rating" class="form-input" required>
+                    <option value="5">5 Stars - Excellent</option>
+                    <option value="4">4 Stars - Very Good</option>
+                    <option value="3">3 Stars - Good</option>
+                    <option value="2">2 Stars - Fair</option>
+                    <option value="1">1 Star - Poor</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <textarea id="r-text" class="form-input" rows="3" placeholder="Write your review..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-outline ripple">Submit Review</button>
+              </form>
+            `}
+          </div>
+          <div id="reviews-list">
+            ${reviews.length === 0 ? '<p style="color:var(--text-muted)">No reviews yet. Be the first!</p>' : 
+              reviews.map(r => {
+                const isOwner = isLoggedIn() && getUser() && (getUser()._id === r.user?._id || getUser().id === r.user?._id);
+                return `
+                <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);" id="review-${r._id}">
+                  <div style="display:flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                       <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: var(--bg-color); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">
+                            ${(r.user?.name || 'A').charAt(0)}
+                       </div>
+                       <strong>${r.user?.name || 'Anonymous'}</strong>
+                    </div>
+                    <span style="color:#fbbf24">${'★'.repeat(r.rating)}</span>
+                  </div>
+                  <p style="color:var(--text-muted); margin-bottom: 0.8rem;">${r.comment}</p>
+                  ${isOwner ? `
+                    <div style="display: flex; gap: 1rem;">
+                      <button onclick="prepareEditReview('${r._id}')" style="background:none; border:none; color:var(--primary); cursor:pointer; font-size: 0.85rem; padding:0;">Edit</button>
+                      <button onclick="handleDeleteReview('${r._id}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size: 0.85rem; padding:0;">Delete</button>
+                    </div>
+                  ` : ''}
+                </div>
+              `}).join('')
+            }
+          </div>
+        </div>
+
+        <div class="observe fade-in delay-1">
+          <div class="glass-card booking-card">
+            <h3 style="margin-bottom: 1rem;">Book Appointment</h3>
+            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 1.5rem;">₹${service.price}</div>
+            
+            <form id="booking-form">
+              <div class="form-group">
+                <label class="form-label">Date</label>
+                <input type="date" id="b-date" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Time</label>
+                <input type="time" id="b-time" class="form-input" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full ripple">Book Now</button>
+            </form>
+          </div>
+        </div>
+      `;
+
+      // --- Global Review Actions ---
+      let editingReviewId = null;
+      let allReviewsData = reviews; // Store for lookup
+
+      window.prepareEditReview = (id) => {
+        const review = allReviewsData.find(r => r._id === id);
+        if (!review) return;
+
+        editingReviewId = id;
+        document.getElementById('r-rating').value = review.rating;
+        document.getElementById('r-text').value = review.comment;
+        
+        // Show update button and cancel option
+        const submitBtn = document.querySelector('#review-form button');
+        submitBtn.textContent = 'Update Review';
+        
+        if (!document.getElementById('cancel-edit')) {
+          const cancelBtn = document.createElement('button');
+          cancelBtn.id = 'cancel-edit';
+          cancelBtn.type = 'button';
+          cancelBtn.className = 'btn btn-outline';
+          cancelBtn.style.marginLeft = '1rem';
+          cancelBtn.textContent = 'Cancel';
+          cancelBtn.onclick = () => {
+            editingReviewId = null;
+            document.getElementById('review-form').reset();
+            submitBtn.textContent = 'Submit Review';
+            cancelBtn.remove();
+          };
+          submitBtn.parentNode.appendChild(cancelBtn);
+        }
+
+        document.getElementById('review-form').scrollIntoView({ behavior: 'smooth' });
+      };
+
+      window.handleDeleteReview = async (id) => {
+        if (!confirm('Are you sure you want to delete this review?')) return;
+        try {
+          const res = await fetch(`${API_URL}/reviews/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+          });
+          const data = await res.json();
+          if (data.success) {
+            showToast('Review deleted');
+            document.getElementById(`review-${id}`).remove();
+          } else {
+            showToast(data.message || 'Failed to delete', 'error');
+          }
+        } catch (err) {
+          showToast('Server error', 'error');
+        }
+      };
+
+      // Set min date to today
+      const dateInput = document.getElementById('b-date');
+      if (dateInput) dateInput.min = new Date().toISOString().split('T')[0];
+
+      // Form Submissions
+      const bForm = document.getElementById('booking-form');
+      if (bForm) {
+        bForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (!isLoggedIn()) {
+            window.location.href = `login.html?redirect=details.html?id=${id}`;
+            return;
+          }
+          
+          const bookingData = {
+            serviceId: service.id,
+            date: document.getElementById('b-date').value,
+            time: document.getElementById('b-time').value,
+          };
+          
+          try {
+            const res = await fetch(`${API_URL}/bookings`, {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+              },
+              body: JSON.stringify(bookingData)
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+              showToast('Booking Confirmed! 🎉');
+              bForm.reset();
+              setTimeout(() => window.location.href = 'bookings.html', 1500);
+            } else {
+              showToast(data.message || 'Failed to book service', 'error');
+            }
+          } catch(err) {
+             showToast('Server error. Is the backend running?', 'error');
+          }
+        });
+      }
+
+      const rForm = document.getElementById('review-form');
+      if (rForm) {
+        rForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const reviewData = {
+            serviceId: id,
+            rating: parseInt(document.getElementById('r-rating').value),
+            comment: document.getElementById('r-text').value,
+          };
+          
+          const method = editingReviewId ? 'PUT' : 'POST';
+          const url = editingReviewId ? `${API_URL}/reviews/${editingReviewId}` : `${API_URL}/reviews`;
+
+          try {
+            const res = await fetch(url, {
+              method: method,
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+              },
+              body: JSON.stringify(reviewData)
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+              showToast(editingReviewId ? 'Review updated' : 'Review added');
+              setTimeout(() => window.location.reload(), 1000);
+            } else {
+              showToast(data.message || 'Failed to submit review', 'error');
+            }
+          } catch(err) {
+            showToast('Server error', 'error');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

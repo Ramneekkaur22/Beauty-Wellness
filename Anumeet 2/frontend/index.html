@@ -1,0 +1,259 @@
+<!DOCTYPE physical>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura | Premium Beauty Marketplace</title>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="testimonials.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">🌓</button>
+      <div class="auth-buttons nav-links" id="auth-nav">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="container hero-container">
+      <div class="hero-content observe fade-in">
+        <div class="hero-badge">✨ The Premier Beauty Marketplace</div>
+        <h1>Elevate Your Beauty & Wellness</h1>
+        <p>Book the best salon, spa, and aesthetic services near you. Experience luxury, expert care, and tailored treatments designed just for you.</p>
+        <div class="hero-buttons">
+          <a href="services.html" class="btn btn-primary ripple">Explore Services</a>
+          <a href="#popular" class="btn btn-outline ripple">Popular Deals</a>
+        </div>
+        <div class="hero-trust">
+          <div class="avatars">
+            <img src="https://i.pravatar.cc/100?img=1" alt="User">
+            <img src="https://i.pravatar.cc/100?img=2" alt="User">
+            <img src="https://i.pravatar.cc/100?img=3" alt="User">
+            <img src="https://i.pravatar.cc/100?img=4" alt="User">
+          </div>
+          <p>Join <strong>10,000+</strong> satisfied customers</p>
+        </div>
+      </div>
+      <div class="hero-image-grid observe fade-in delay-1">
+        <div class="hero-img-wrap-1">
+          <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80" alt="Spa Treatment" class="hero-img">
+          <div class="floating-badge top-left glass-card">
+            <span class="fb-icon">⭐</span>
+            <div class="fb-text">
+               <strong>4.9/5</strong>
+               <span>Top Rated Pros</span>
+            </div>
+          </div>
+        </div>
+        <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&q=80" alt="Skin Care" class="hero-img hero-img-2">
+        <div class="hero-img-wrap-3">
+          <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=800&q=80" alt="Wellness" class="hero-img">
+          <div class="floating-badge bottom-right glass-card">
+            <span class="fb-icon">📅</span>
+            <div class="fb-text">
+               <strong>Instant</strong>
+               <span>Easy Booking</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="section-header observe fade-in">
+      <h2>Browse by Category</h2>
+      <p>Find exactly what you need</p>
+    </div>
+    <div class="categories-grid" id="categories-container">
+      <!-- Injected by JS -->
+    </div>
+  </section>
+
+  <section id="popular" class="section container">
+    <div class="section-header observe fade-in">
+      <h2>Trending Services</h2>
+      <p>Highly rated by our community</p>
+    </div>
+    <div class="services-grid" id="popular-container">
+      <!-- Injected by JS -->
+    </div>
+    <div class="container" style="text-align: center; margin-top: 3rem;">
+      <a href="services.html" class="btn btn-primary ripple">View All Services</a>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="testimonials-header observe fade-in">
+        <div class="testimonials-badge">Loved by clients</div>
+        <h2>What people are saying</h2>
+        <p>Real feedback from customers who have experienced our premium beauty and wellness services.</p>
+      </div>
+      
+      <div class="marquee-container observe fade-in delay-1" id="rows-container"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+          <p style="color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6;">Your premium destination for beauty and wellness services. We connect you with top-tier professionals for a seamless self-care experience.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Hair Styling</a></li>
+            <li><a href="services.html">Makeup Artists</a></li>
+            <li><a href="services.html">Spa & Massage</a></li>
+            <li><a href="services.html">Nail Care</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="testimonials.html">Reviews</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Stay Updated</h4>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">Subscribe to our newsletter for the latest beauty tips and exclusive offers.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aura Beauty & Wellness. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="cookies.html">Cookie Settings</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Load Categories
+      const catContainer = document.getElementById('categories-container');
+      CATEGORIES.slice(1).forEach((cat, i) => { // Skip 'All'
+        const el = document.createElement('div');
+        el.className = `category-card observe fade-in delay-${(i%3)+1}`;
+        el.style.backgroundImage = `url('${cat.image}')`;
+        el.innerHTML = `
+          <div class="category-content">
+            <div class="category-icon">${cat.icon}</div>
+            <h4>${cat.label}</h4>
+          </div>
+        `;
+        el.onclick = () => window.location.href = `services.html?category=${encodeURIComponent(cat.id)}`;
+        catContainer.appendChild(el);
+      });
+
+      // Load Popular Services from backend or mock
+      await loadServices();
+      const popContainer = document.getElementById('popular-container');
+      const popular = SERVICES.filter(s => s.tags?.includes('popular')).slice(0, 3);
+      if(popContainer) popContainer.innerHTML = popular.map(createServiceCard).join('');
+      
+      // Re-trigger animations after dynamic content loads
+      if (typeof initAnimations === 'function') {
+        setTimeout(initAnimations, 100);
+      }
+    });
+  </script>
+  <script>
+    const testimonials = [
+        { text: "Aura's services helped me prepare for my wedding effortlessly. The bridal makeup was flawless.", name: "Priya Sharma", role: "Bride", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80" },
+        { text: "The attention to detail in their hair spa is impressive. Saved me hours of looking for a good salon. Highly recommended.", name: "Rohan Mehta", role: "Regular Client", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200" },
+        { text: "We were able to book instantly. The consistency across all the providers makes the app feel extremely reliable.", name: "Aisha Khan", role: "Wellness Enthusiast", image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200&auto=format&fit=crop&q=60" },
+        { text: "Aura feels like it was built by people who actually understand luxury. The deep tissue massage was incredible.", name: "Alex Turner", role: "Business Executive", image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=200&auto=format&fit=crop&q=60" },
+        { text: "I've maintained a perfect skincare routine thanks to Aura's top-rated pros. It's now a core part of my lifestyle.", name: "Sofia Martinez", role: "Model", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=100&h=100&auto=format&fit=crop" },
+        { text: "The app is so easy to use. I booked a keratin treatment in seconds and the results were stunning.", name: "Daniel Wong", role: "Client", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80" }
+    ];
+
+    const rows = [
+        { start: 0, end: 3, className: "animate-scroll" },
+        { start: 3, end: 6, className: "animate-scroll-reverse" }
+    ];
+
+    function renderCard(testimonial) {
+        const stars = Array(5).fill(0).map(() =>
+            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="stars"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>`
+        ).join('');
+
+        return `
+            <div class="testimonial-card">
+                <div class="stars" style="margin-bottom: 0.5rem; color: #fbbf24; display: flex; gap: 0.2rem;">
+                    ${stars}
+                </div>
+                <p class="testimonial-text">${testimonial.text}</p>
+                <div class="testimonial-author">
+                    <img src="${testimonial.image}" alt="${testimonial.name}"/>
+                    <div class="author-info">
+                        <h4>${testimonial.name}</h4>
+                        <p>${testimonial.role}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const rowsContainer = document.getElementById('rows-container');
+        if (rowsContainer) {
+            rows.forEach((row) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'marquee-row';
+                const items = testimonials.slice(row.start, row.end);
+                rowDiv.innerHTML = `
+                    <div class="marquee-content ${row.className}">
+                        ${[...items, ...items, ...items, ...items].map(t => renderCard(t)).join('')}
+                    </div>
+                `;
+                rowsContainer.appendChild(rowDiv);
+            });
+        }
+    });
+  </script>
+</body>
+</html>

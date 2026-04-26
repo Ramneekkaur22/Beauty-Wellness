@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testimonials | Aura</title>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="testimonials.html" class="active">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">🌓</button>
+      <div class="auth-buttons nav-links" id="auth-nav">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </nav>
+
+  <main class="testimonials-page">
+    <div class="testimonials-page-header observe fade-in">
+        <h1>People love us</h1>
+        <p>Real stories from clients and professionals using Aura to elevate their beauty and wellness experience.</p>
+    </div>
+
+    <div class="container" style="padding-bottom: 6rem;">
+        <div class="services-grid" id="reviews-container">
+            <!-- Injected by JS -->
+        </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+          <p style="color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6;">Your premium destination for beauty and wellness services. We connect you with top-tier professionals for a seamless self-care experience.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Hair Styling</a></li>
+            <li><a href="services.html">Makeup Artists</a></li>
+            <li><a href="services.html">Spa & Massage</a></li>
+            <li><a href="services.html">Nail Care</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="testimonials.html">Reviews</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Stay Updated</h4>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">Subscribe to our newsletter for the latest beauty tips and exclusive offers.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aura Beauty & Wellness. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="cookies.html">Cookie Settings</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    function renderReviewCard(review) {
+        const rating = review.rating || 5;
+        return `
+            <div class="glass-card" style="display: flex; flex-direction: column; gap: 1rem; height: 100%; padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: var(--bg-color); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">
+                            ${review.name.charAt(0)}
+                        </div>
+                        <div>
+                            <h4 style="font-size: 0.9rem; margin: 0;">${review.name}</h4>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">${review.company}</p>
+                        </div>
+                    </div>
+                    <span style="color: #fbbf24; font-size: 0.8rem;">${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}</span>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin: 0; flex-grow: 1;">
+                    "${review.description}"
+                </p>
+            </div>
+        `;
+    }
+
+    async function fetchAllReviews() {
+        try {
+            const res = await fetch(`${API_URL}/reviews`);
+            const data = await res.json();
+            if (data.success) {
+                return data.reviews.map(r => ({
+                    id: r._id,
+                    rating: r.rating,
+                    description: r.comment,
+                    image: r.user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(r.user?.name)}&background=random`,
+                    name: r.user?.name || "Anonymous",
+                    company: r.service?.title || "Premium Service"
+                }));
+            }
+        } catch (err) {
+            console.error('Failed to fetch reviews:', err);
+        }
+        return [];
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const container = document.getElementById('reviews-container');
+        if (!container) return;
+
+        const reviews = await fetchAllReviews();
+        
+        if (reviews.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; opacity: 0.5;">
+                    <p style="font-size: 1.2rem;">No genuine reviews yet. Be the first to share your experience!</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = reviews.map(renderReviewCard).join('');
+        
+        // Re-trigger animations
+        if (typeof initAnimations === 'function') {
+          setTimeout(initAnimations, 100);
+        }
+    });
+  </script>
+</body>
+</html>

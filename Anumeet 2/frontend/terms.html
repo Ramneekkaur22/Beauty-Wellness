@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service | Aura</title>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="testimonials.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">🌓</button>
+      <div class="auth-buttons nav-links" id="auth-nav"></div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top: 140px; padding-bottom: 6rem; max-width: 800px;">
+    <div class="section-header observe fade-in" style="text-align: left;">
+        <span class="hero-badge" style="margin: 0 0 1.5rem 0;">Legal</span>
+        <h1>Terms of Service</h1>
+        <p>Last updated: April 25, 2026</p>
+    </div>
+
+    <div class="glass-card observe fade-in delay-1" style="padding: 3rem; line-height: 1.8;">
+        <section style="margin-bottom: 2rem;">
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing and using the Aura Beauty & Wellness website and services, you agree to comply with and be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.</p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2>2. Description of Service</h2>
+            <p>Aura provides an online marketplace connecting users with beauty and wellness professionals. We are a platform and do not provide the beauty services ourselves; these are provided by independent partners.</p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2>3. Booking and Cancellations</h2>
+            <p>Users can book appointments through our platform. Each service provider may have their own specific cancellation policy, which will be displayed during the booking process. Generally, cancellations must be made at least 24 hours in advance.</p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2>4. User Conduct</h2>
+            <p>You agree to use our services only for lawful purposes. You are prohibited from posting any content that is defamatory, obscene, or infringing upon intellectual property rights.</p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2>5. Limitation of Liability</h2>
+            <p>Aura shall not be liable for any indirect, incidental, special, or consequential damages resulting from the use or inability to use our services, or for the cost of procurement of substitute goods and services.</p>
+        </section>
+
+        <section>
+            <h2>6. Governing Law</h2>
+            <p>These terms shall be governed by and construed in accordance with the laws of India. Any disputes arising under these terms shall be subject to the exclusive jurisdiction of the courts in Delhi.</p>
+        </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+          <p style="color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6;">Your premium destination for beauty and wellness services. We connect you with top-tier professionals for a seamless self-care experience.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Hair Styling</a></li>
+            <li><a href="services.html">Makeup Artists</a></li>
+            <li><a href="services.html">Spa & Massage</a></li>
+            <li><a href="services.html">Nail Care</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="testimonials.html">Reviews</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Stay Updated</h4>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">Subscribe to our newsletter for the latest beauty tips and exclusive offers.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aura Beauty & Wellness. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="cookies.html">Cookie Settings</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

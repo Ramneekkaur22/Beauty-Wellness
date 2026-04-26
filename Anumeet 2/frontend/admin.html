@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Aura</title>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-container {
+      max-width: 1200px;
+      margin: 100px auto;
+      padding: 0 2rem;
+    }
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 2rem;
+      border-radius: 16px;
+      text-align: center;
+    }
+    .stat-box h3 { font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--primary); }
+    .stat-box p { color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    .booking-table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .booking-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .booking-table th, .booking-table td {
+      padding: 1.2rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .booking-table th {
+      background: rgba(var(--primary-rgb), 0.05);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .booking-table tr:last-child td { border-bottom: none; }
+    
+    .status-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status-pending { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+    .status-confirmed { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .status-cancelled { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+    .admin-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .action-btn {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="testimonials.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html" class="active">Admin</a>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">🌓</button>
+      <div class="auth-buttons nav-links" id="auth-nav"></div>
+    </div>
+  </nav>
+
+  <div class="admin-container">
+    <div class="section-header observe fade-in" style="text-align: left;">
+      <h2>Admin Dashboard</h2>
+      <p>Manage all bookings and services</p>
+    </div>
+
+    <div class="admin-stats observe fade-in delay-1">
+      <div class="stat-box">
+        <h3 id="stat-total-bookings">0</h3>
+        <p>Total Bookings</p>
+      </div>
+      <div class="stat-box">
+        <h3 id="stat-revenue" style="color: var(--success);">₹0</h3>
+        <p>Revenue</p>
+      </div>
+      <div class="stat-box">
+        <h3 id="stat-users">0</h3>
+        <p>Active Users</p>
+      </div>
+    </div>
+
+    <div class="booking-table-card observe fade-in delay-2">
+      <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+        <h3 style="font-size: 1.25rem;">All Bookings</h3>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-outline" style="color: var(--primary); border-color: var(--primary);" onclick="seedDatabase()">🌱 Seed Services</button>
+          <button class="btn btn-outline" onclick="fetchBookings()">Refresh List</button>
+        </div>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="booking-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Service</th>
+              <th>Date & Time</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-bookings-list">
+            <!-- Injected by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+          <p style="color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6;">Your premium destination for beauty and wellness services. We connect you with top-tier professionals for a seamless self-care experience.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Hair Styling</a></li>
+            <li><a href="services.html">Makeup Artists</a></li>
+            <li><a href="services.html">Spa & Massage</a></li>
+            <li><a href="services.html">Nail Care</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="testimonials.html">Reviews</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Stay Updated</h4>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">Subscribe to our newsletter for the latest beauty tips and exclusive offers.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aura Beauty & Wellness. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="cookies.html">Cookie Settings</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = getUser();
+      if (!user || user.role !== 'admin') {
+        window.location.href = 'index.html';
+        return;
+      }
+      fetchBookings();
+    });
+
+    async function fetchBookings() {
+      const tbody = document.getElementById('admin-bookings-list');
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">Loading bookings...</td></tr>';
+
+      try {
+        const res = await fetch(`${API_URL}/bookings`, {
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        const data = await res.json();
+
+        if (!data.success || !data.bookings) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">Failed to load bookings.</td></tr>';
+          return;
+        }
+
+        const bookings = data.bookings;
+        
+        // Stats
+        document.getElementById('stat-total-bookings').textContent = bookings.length;
+        const revenue = bookings.reduce((sum, b) => b.status === 'confirmed' ? sum + b.service.price : sum, 0);
+        document.getElementById('stat-revenue').textContent = '₹' + revenue.toLocaleString('en-IN');
+        const uniqueUsers = new Set(bookings.map(b => b.user?._id)).size;
+        document.getElementById('stat-users').textContent = uniqueUsers;
+
+        if (bookings.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">No bookings found in system.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = bookings.map(b => `
+          <tr>
+            <td>
+              <div style="font-weight: 600;">${b.user?.name || 'Unknown'}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">${b.user?.email || ''}</div>
+            </td>
+            <td>
+              <div style="font-weight: 500;">${b.service?.title}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">${b.service?.provider}</div>
+            </td>
+            <td>
+              <div>${new Date(b.date).toLocaleDateString()}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">${b.time}</div>
+            </td>
+            <td><span style="font-weight: 600;">₹${b.service?.price}</span></td>
+            <td><span class="status-badge status-${b.status}">${b.status}</span></td>
+            <td>
+              <div class="admin-actions">
+                ${b.status === 'pending' ? `
+                  <button onclick="updateStatus('${b._id}', 'confirmed')" class="btn btn-primary action-btn">Approve</button>
+                  <button onclick="updateStatus('${b._id}', 'cancelled')" class="btn btn-outline action-btn" style="color:var(--danger); border-color:var(--danger);">Reject</button>
+                ` : `
+                  <span style="color:var(--text-muted); font-size:0.8rem;">Processed</span>
+                `}
+              </div>
+            </td>
+          </tr>
+        `).join('');
+
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">Error: ' + err.message + '</td></tr>';
+      }
+    }
+
+    async function updateStatus(id, status) {
+      if (!confirm(`Are you sure you want to set this booking to ${status}?`)) return;
+
+      try {
+        const res = await fetch(`${API_URL}/bookings/${id}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({ status })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`Booking ${status}!`, 'success');
+          fetchBookings();
+        } else {
+          showToast(data.message || 'Update failed', 'error');
+        }
+      } catch (err) {
+        showToast('Server error', 'error');
+      }
+    }
+
+    async function seedDatabase() {
+      if (!confirm('This will reset your services database to default. Continue?')) return;
+      try {
+        const res = await fetch(`${API_URL}/services/seed`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Database Seeded Successfully!', 'success');
+          setTimeout(() => window.location.reload(), 1500);
+        } else {
+          showToast(data.message || 'Seeding failed', 'error');
+        }
+      } catch (err) {
+        showToast('Server error', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

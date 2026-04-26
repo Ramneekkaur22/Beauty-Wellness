@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Aura</title>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="testimonials.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">🌓</button>
+      <div class="auth-buttons nav-links" id="auth-nav"></div>
+    </div>
+  </nav>
+
+  <div class="dashboard-grid container">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar glass-card observe fade-in">
+      <div class="dashboard-avatar" id="avatar">
+        <!-- Initial -->
+      </div>
+      <h2 id="p-name" style="margin-bottom: 0.2rem;">Loading...</h2>
+      <p id="p-email" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;"></p>
+      
+      <div style="padding: 1rem 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+        <p style="font-size: 0.9rem; color: var(--text-muted);">Member since 2024</p>
+      </div>
+
+      <div class="dashboard-nav">
+        <div class="dashboard-nav-item active" onclick="switchTab('overview')">
+          <span>📊</span> Overview
+        </div>
+        <div class="dashboard-nav-item" onclick="window.location.href='bookings.html'">
+          <span>📅</span> My Bookings
+        </div>
+        <div class="dashboard-nav-item" onclick="handleLogout(event)">
+          <span>🚪</span> Logout
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-content observe fade-in delay-1">
+      <div class="section-header" style="text-align: left; margin-bottom: 2rem;">
+        <h2>Dashboard Overview</h2>
+        <p>Welcome back! Here is a summary of your activity.</p>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="dashboard-stats">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-bookings">0</div>
+          <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-active" style="color: var(--accent);">0</div>
+          <div class="stat-label">Upcoming Appointments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-spent">₹0</div>
+          <div class="stat-label">Total Spent</div>
+        </div>
+      </div>
+
+      <!-- Recent Bookings Summary -->
+      <div class="glass-card" style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.5rem;">Recent Bookings</h3>
+          <a href="bookings.html" style="color: var(--text-muted); font-size: 0.95rem; text-decoration: underline;">View All</a>
+        </div>
+        <div id="recent-bookings-list">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+          <p style="color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6;">Your premium destination for beauty and wellness services. We connect you with top-tier professionals for a seamless self-care experience.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Hair Styling</a></li>
+            <li><a href="services.html">Makeup Artists</a></li>
+            <li><a href="services.html">Spa & Massage</a></li>
+            <li><a href="services.html">Nail Care</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="testimonials.html">Reviews</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Stay Updated</h4>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">Subscribe to our newsletter for the latest beauty tips and exclusive offers.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aura Beauty & Wellness. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="cookies.html">Cookie Settings</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = getUser();
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Populate User Info
+      document.getElementById('p-name').textContent = user.name;
+      document.getElementById('p-email').textContent = user.email;
+      document.getElementById('avatar').textContent = user.name.charAt(0).toUpperCase();
+
+      try {
+        const res = await fetch(`${API_URL}/bookings/my`, {
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          }
+        });
+        const data = await res.json();
+        
+        const bookings = data.bookings || [];
+        const activeBookings = bookings.filter(b => b.status === 'confirmed');
+        const totalSpent = bookings.reduce((sum, b) => b.status !== 'cancelled' ? sum + b.service.price : sum, 0);
+
+        document.getElementById('stat-bookings').textContent = bookings.length;
+        document.getElementById('stat-active').textContent = activeBookings.length;
+        document.getElementById('stat-spent').textContent = '₹' + totalSpent.toLocaleString('en-IN');
+
+        // Populate Recent Bookings (Max 3)
+        const recentContainer = document.getElementById('recent-bookings-list');
+        if (bookings.length === 0) {
+          recentContainer.innerHTML = '<p style="color: var(--text-muted);">No recent bookings found.</p>';
+        } else {
+          recentContainer.innerHTML = bookings.slice(0, 3).map(b => `
+            <div style="display: flex; align-items: center; gap: 1.5rem; padding: 1rem 0; border-bottom: 1px solid var(--border-color);">
+              <img src="${b.service.image}" alt="" style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover;">
+              <div style="flex-grow: 1;">
+                <h4 style="margin-bottom: 0.2rem; font-size: 1.1rem;">${b.service.title}</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">${new Date(b.date).toLocaleDateString()} at ${b.time}</p>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-weight: 600; margin-bottom: 0.3rem;">₹${b.service.price}</div>
+                <span style="background: ${b.status === 'confirmed' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}; 
+                             color: ${b.status === 'confirmed' ? 'var(--success)' : 'var(--danger)'};
+                             padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: 600;">
+                  ${b.status}
+                </span>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Error loading dashboard stats:', err);
+      }
+    });
+
+    function switchTab(tab) {
+      // For future expansion (e.g., Settings tab)
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings | Aura</title>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="testimonials.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">🌓</button>
+      <div class="auth-buttons nav-links" id="auth-nav"></div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 100px; min-height: 80vh;">
+    <div class="section-header observe fade-in" style="text-align: left;">
+      <h2>My Bookings</h2>
+      <p>Manage your upcoming appointments</p>
+    </div>
+
+    <div id="bookings-list" style="max-width: 800px;">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+          <p style="color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6;">Your premium destination for beauty and wellness services. We connect you with top-tier professionals for a seamless self-care experience.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Hair Styling</a></li>
+            <li><a href="services.html">Makeup Artists</a></li>
+            <li><a href="services.html">Spa & Massage</a></li>
+            <li><a href="services.html">Nail Care</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="testimonials.html">Reviews</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Stay Updated</h4>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">Subscribe to our newsletter for the latest beauty tips and exclusive offers.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aura Beauty & Wellness. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="cookies.html">Cookie Settings</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      renderBookings();
+    });
+
+    async function renderBookings() {
+      const container = document.getElementById('bookings-list');
+      
+      try {
+        const res = await fetch(`${API_URL}/bookings/my`, {
+          headers: {
+            'Authorization': `Bearer ${getToken()}`
+          }
+        });
+        const data = await res.json();
+        
+        if (!data.success || !data.bookings || data.bookings.length === 0) {
+          container.innerHTML = `
+            <div class="glass-card" style="text-align:center; padding: 4rem 2rem;">
+              <h3>No bookings yet</h3>
+              <p style="color:var(--text-muted); margin: 1rem 0 2rem;">Looks like you haven't booked any services.</p>
+              <a href="services.html" class="btn btn-primary ripple">Explore Services</a>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = data.bookings.map(b => `
+          <div class="glass-card observe fade-in" style="margin-bottom: 1.5rem; display: flex; gap: 1.5rem; align-items: center;">
+            <img src="${b.service.image}" alt="" style="width: 120px; height: 120px; border-radius: 12px; object-fit: cover;">
+            <div style="flex-grow: 1;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <h3 style="margin-bottom:0.2rem;">${b.service.title}</h3>
+                  <p style="color:var(--text-muted); font-size:0.9rem;">${new Date(b.date).toLocaleDateString()} at ${b.time}</p>
+                </div>
+                <span style="background: ${b.status === 'confirmed' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}; 
+                             color: ${b.status === 'confirmed' ? 'var(--success)' : 'var(--danger)'};
+                             padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.8rem; text-transform: uppercase;">
+                  ${b.status}
+                </span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top: 1rem;">
+                <span style="font-weight: 600; font-size: 1.2rem;">₹${b.service.price}</span>
+                ${b.status === 'confirmed' ? 
+                  `<button onclick="handleCancel('${b._id}')" class="btn btn-outline" style="padding: 0.4rem 1rem; border-color:var(--danger); color:var(--danger);">Cancel</button>` 
+                  : ''}
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = `<p style="text-align:center; padding: 2rem;">Error loading bookings. Please try again later.</p>`;
+      }
+    }
+
+    window.handleCancel = async (id) => {
+      if(confirm('Are you sure you want to cancel this booking?')) {
+        try {
+          const res = await fetch(`${API_URL}/bookings/${id}/cancel`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${getToken()}`
+            }
+          });
+          const data = await res.json();
+          if (data.success) {
+            showToast('Booking cancelled successfully', 'success');
+            renderBookings();
+          } else {
+            showToast(data.message || 'Failed to cancel booking', 'error');
+          }
+        } catch (err) {
+          showToast('Server error', 'error');
+        }
+      }
+    };
+  </script>
+</body>
+</html>

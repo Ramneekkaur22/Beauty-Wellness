@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services | Aura</title>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html" class="active">Services</a>
+        <a href="testimonials.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">🌓</button>
+      <div class="auth-buttons nav-links" id="auth-nav"></div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 100px; min-height: 80vh;">
+    <div class="section-header observe fade-in" style="text-align: left;">
+      <h2>All Services</h2>
+      <p>Find the perfect treatment for you</p>
+    </div>
+
+    <div class="search-bar observe fade-in">
+      <input type="text" id="search-input" class="form-input search-input"
+        placeholder="Search for services, providers...">
+    </div>
+
+    <div class="filter-scroll observe fade-in" id="filter-container">
+      <!-- Injected by JS -->
+    </div>
+
+    <div class="services-marquee-wrapper observe fade-in">
+      <div class="services-marquee-grid" id="services-container">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="index.html" class="logo">✨ Aura<span>.</span></a>
+          <p style="color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6;">Your premium destination for beauty
+            and wellness services. We connect you with top-tier professionals for a seamless self-care experience.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Hair Styling</a></li>
+            <li><a href="services.html">Makeup Artists</a></li>
+            <li><a href="services.html">Spa & Massage</a></li>
+            <li><a href="services.html">Nail Care</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="testimonials.html">Reviews</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Stay Updated</h4>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">Subscribe to our newsletter for the latest beauty
+            tips and exclusive offers.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aura Beauty & Wellness. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="cookies.html">Cookie Settings</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const container = document.getElementById('services-container');
+      const searchInput = document.getElementById('search-input');
+      const filterContainer = document.getElementById('filter-container');
+
+      const urlParams = new URLSearchParams(window.location.search);
+      let currentCategory = urlParams.get('category') || 'all';
+
+      await loadServices();
+
+      // Render Filters
+      filterContainer.innerHTML = CATEGORIES.map(cat => `
+        <button class="filter-btn ${cat.id === currentCategory ? 'active' : ''}" data-id="${cat.id}">
+          ${cat.icon} ${cat.label}
+        </button>
+      `).join('');
+
+      // Filter Logic
+      filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const activeBtn = filterContainer.querySelector('.filter-btn.active');
+          if (activeBtn) activeBtn.classList.remove('active');
+          e.currentTarget.classList.add('active');
+          currentCategory = e.currentTarget.dataset.id;
+          renderServices();
+        });
+      });
+
+      searchInput.addEventListener('input', renderServices);
+
+      function renderServices() {
+        const query = searchInput.value.toLowerCase();
+        const filtered = SERVICES.filter(s => {
+          const matchCat = currentCategory === 'all' || s.category === currentCategory;
+          const matchSearch = s.title.toLowerCase().includes(query) ||
+            s.provider.toLowerCase().includes(query);
+          return matchCat && matchSearch;
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 3rem; color: var(--text-muted);">No services found.</div>`;
+          return;
+        }
+
+        // Simple grid rendering (No marquee, no duplication)
+        container.innerHTML = filtered.map(createServiceCard).join('');
+        container.classList.remove('services-marquee-grid');
+        container.classList.add('services-grid');
+
+
+        if (typeof initAnimations === 'function') {
+          setTimeout(initAnimations, 100);
+        }
+      }
+
+      renderServices();
+    });
+  </script>
+</body>
+
+</html>
